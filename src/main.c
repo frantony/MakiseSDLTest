@@ -63,6 +63,68 @@ MInputData inp_handler(MInputData d, MInputResultEnum res)
     }
     return (MInputData){0};
 }
+
+static void handle_keydown(MHost *host, SDL_Event *event)
+{
+	MInputKeyEnum inp_key = M_KEY_NONE;
+
+	/*
+	 * Arrows - arrows
+	 * Tab - switch tabs or focus
+	 * Return - OK
+	 * Minus/Equals - switch focus
+	 * Esc - exit from test
+	 * Delete - print tree of elements
+	 */
+
+	switch (event->key.keysym.sym) {
+
+	case SDLK_LEFT:
+		inp_key = M_KEY_LEFT;
+		break;
+
+	case SDLK_RIGHT:
+		inp_key = M_KEY_RIGHT;
+		break;
+
+	case SDLK_UP:
+		inp_key = M_KEY_UP;
+		break;
+
+	case SDLK_DOWN:
+		inp_key = M_KEY_DOWN;
+		break;
+
+	case SDLK_TAB:
+		inp_key = M_KEY_TAB_NEXT;
+		break;
+
+	case SDLK_RETURN:
+		inp_key = M_KEY_OK;
+		break;
+
+	//DO NOT Interact with gui directly. It may cause errors in multithread applications. Use custom events
+	case SDLK_DELETE:
+		inp_key = M_KEY_USER_TREE;
+		break;
+
+	case SDLK_ESCAPE:
+		inp_key = M_KEY_USER_ESC;
+		break;
+
+	case SDLK_EQUALS:
+		inp_key = M_KEY_USER_FOCUS_NEXT;
+		break;
+
+	case SDLK_MINUS:
+		inp_key = M_KEY_USER_FOCUS_PREV;
+		break;
+	}
+
+	if (inp_key != M_KEY_NONE)
+		makise_gui_input_send_button(host, inp_key, M_INPUT_CLICK, 100);
+}
+
 uint8_t prsed = 0;
 int main(void) {
     SDL_Event event;
@@ -146,73 +208,9 @@ int main(void) {
 			makise_gui_input_send(host, d);
 		    }
 		    break;
-		    /*Arrows - arrows
-		      Tab - switch tabs or focus
-		      Return - OK
-		      Minus/Equals - switch focus
-		      Esc - exit from test
-		      Delete - print tree of elements
-		     */
 		case SDL_KEYDOWN:
-		    switch (event.key.keysym.sym)
-		    {
-		    case SDLK_LEFT:
-			makise_gui_input_send_button(host,
-						     M_KEY_LEFT,
-						     M_INPUT_CLICK, 100);
+			handle_keydown(host, &event);
 			break;
-		    case SDLK_RIGHT:
-			makise_gui_input_send_button(host,
-						     M_KEY_RIGHT,
-						     M_INPUT_CLICK, 100);
-			break;
-		    case SDLK_UP:
-			makise_gui_input_send_button(host,
-						     M_KEY_UP,
-						     M_INPUT_CLICK, 100);
-			break;
-		    case SDLK_DOWN:
-			makise_gui_input_send_button(host,
-						     M_KEY_DOWN,
-						     M_INPUT_CLICK, 100);
-			break;
-		    case SDLK_TAB:
-			makise_gui_input_send_button(host,
-						     M_KEY_TAB_NEXT,
-						     M_INPUT_CLICK, 100);
-			break;
-		    case SDLK_RETURN:
-			makise_gui_input_send_button(host,
-						     M_KEY_OK,
-						     M_INPUT_CLICK, 100);
-			break;
-
-			//DO NOT Interact with gui directly. It may cause errors in multithread applications. Use custom events
-		    case SDLK_DELETE:
-			makise_gui_input_send_button(host,
-						     M_KEY_USER_TREE,
-						     M_INPUT_CLICK, 100);
-
-			break;
-		    case SDLK_ESCAPE:
-			makise_gui_input_send_button(host,
-						     M_KEY_USER_ESC,
-						     M_INPUT_CLICK, 100);
-
-			break;
-		    case SDLK_EQUALS:
-			makise_gui_input_send_button(host,
-						     M_KEY_USER_FOCUS_NEXT,
-						     M_INPUT_CLICK, 100);
-
-			break;
-		    case SDLK_MINUS:
-			makise_gui_input_send_button(host,
-						     M_KEY_USER_FOCUS_PREV,
-						     M_INPUT_CLICK, 100);
-			break;
-		    }
-		    
 		}
 	    }
 	    while (SDL_PollEvent(&event));
