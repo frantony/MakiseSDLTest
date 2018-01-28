@@ -163,13 +163,8 @@ int main(void) {
 
 		if(prsed)
 		{
-		    MInputData d;
-		    d.event = M_INPUT_PRESSING;
-		    d.key = M_KEY_CURSOR;
-		    d.time = 100;
-		    d.cursor.x = x;
-		    d.cursor.y = y;
-		    makise_gui_input_send(host, d);
+			makise_gui_input_send_cursor(host, M_INPUT_PRESSING,
+							x, y, 100);
 		}
 		switch(event.type)
 		{
@@ -184,13 +179,8 @@ int main(void) {
 		    {
 			//printf("down\n");
 			prsed = 1;
-			MInputData d;
-			d.event = M_INPUT_PRESSING;
-			d.key = M_KEY_CURSOR;
-			d.time = 100;
-			d.cursor.x = x;
-			d.cursor.y = y;
-			makise_gui_input_send(host, d);
+			makise_gui_input_send_cursor(host, M_INPUT_PRESSING,
+							x, y, 100);
 		    }
 		    break;
 		case SDL_MOUSEBUTTONUP:
@@ -199,13 +189,8 @@ int main(void) {
 		    {
 			//printf("up\n");
 			prsed = 0;
-			MInputData d;
-			d.event = M_INPUT_CLICK;
-			d.key = M_KEY_CURSOR;
-			d.time = 100;
-			d.cursor.x = x;
-			d.cursor.y = y;
-			makise_gui_input_send(host, d);
+			makise_gui_input_send_cursor(host, M_INPUT_CLICK,
+							x, y, 100);
 		    }
 		    break;
 		case SDL_KEYDOWN:
